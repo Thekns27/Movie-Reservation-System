@@ -1,0 +1,109 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table users {
+  id String [pk]
+  name String [not null]
+  email String [unique, not null]
+  password String [not null]
+  role Role [not null, default: 'USER']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  bookings bookings [not null]
+}
+
+Table movies {
+  id String [pk]
+  title String [not null]
+  genre String [not null]
+  actors String[] [not null]
+  duration Int [not null]
+  description String
+  isActive Boolean [not null, default: true]
+  showtimes showtimes [not null]
+}
+
+Table screens {
+  id String [pk]
+  name String [not null]
+  capacity Int [not null]
+  seats seats [not null]
+  showtimes showtimes [not null]
+}
+
+Table seats {
+  id String [pk]
+  row String [not null]
+  number Int [not null]
+  screenId String [not null]
+  screen screens [not null]
+  bookings booking_seats [not null]
+
+  indexes {
+    (screenId, row, number) [unique]
+  }
+}
+
+Table showtimes {
+  id String [pk]
+  startTime DateTime [not null]
+  price Decimal [not null, default: 10]
+  movieId String [not null]
+  screenId String [not null]
+  movie movies [not null]
+  screen screens [not null]
+  bookings bookings [not null]
+}
+
+Table bookings {
+  id String [pk]
+  userId String [not null]
+  showtimeId String [not null]
+  status BookingStatus [not null, default: 'PENDING']
+  totalPrice Decimal [not null]
+  stripeSessionId String [unique]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  user users [not null]
+  showtime showtimes [not null]
+  seats booking_seats [not null]
+}
+
+Table booking_seats {
+  bookingId String [not null]
+  seatId String [not null]
+  booking bookings [not null]
+  seat seats [not null]
+
+  indexes {
+    (bookingId, seatId) [pk]
+  }
+}
+
+Enum Role {
+  ADMIN
+  STAFF
+  USER
+}
+
+Enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  TIMED_OUT
+}
+
+Ref: seats.screenId > screens.id
+
+Ref: showtimes.movieId > movies.id
+
+Ref: showtimes.screenId > screens.id
+
+Ref: bookings.userId > users.id
+
+Ref: bookings.showtimeId > showtimes.id
+
+Ref: booking_seats.bookingId > bookings.id [delete: Cascade]
+
+Ref: booking_seats.seatId > seats.id
