@@ -39,19 +39,43 @@ export class PrismaUserRepository implements UserRepository {
     return record ? this.toDomain(record) : null;
   }
 
-  async save(user: User, tx?: Prisma.TransactionClient): Promise<User> {
-    const data = user.toPrimitives();
-    const record = await (tx || this.prisma.baseClient).user.create({
-      data: {
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        role: data.role,
-      },
-    });
-    return this.toDomain(record);
-  }
+  // async save(user: User, tx?: Prisma.TransactionClient): Promise<User> {
+  //   const data = user.toPrimitives();
+  //   const record = await (tx || this.prisma.baseClient).user.create({
+  //     data: {
+  //       id: data.id,
+  //       name: data.name,
+  //       email: data.email,
+  //       password: data.password,
+  //       role: data.role,
+  //     },
+  //   });
+  //   return this.toDomain(record);
+  // }
+
+  
+async save(user: User, tx?: Prisma.TransactionClient): Promise<User> {
+  const data = user.toPrimitives();
+  const client = tx || this.prisma.baseClient;
+
+  const record = await client.user.upsert({
+    where: { id: data.id || '' },
+    update: {
+      name: data.name,
+      email: data.email,
+      role: data.role,
+      password: data.password,
+    },
+    create: {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: data.role,
+    },
+  });
+  return this.toDomain(record);
+}
 
   private toDomain(record: any): User {
     return User.create({
@@ -68,4 +92,33 @@ export class PrismaUserRepository implements UserRepository {
   private toDomainList(records: any[]): User[] {
     return records.map(record => this.toDomain(record));
   }
+
+
 }
+
+/**
+ * // src/user/infrastructure/prisma-user.repository.ts
+
+async save(user: User, tx?: Prisma.TransactionClient): Promise<User> {
+  const data = user.toPrimitives();
+  const client = tx || this.prisma.baseClient;
+
+  const record = await client.user.upsert({
+    where: { id: data.id || '' },
+    update: {
+      name: data.name,
+      email: data.email,
+      role: data.role,
+      password: data.password,
+    },
+    create: {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: data.role,
+    },
+  });
+  return this.toDomain(record);
+}
+ */

@@ -15,7 +15,7 @@ export class UserResponseDto {
   email!: string;
 
   @ApiProperty({ example: 'user', description: 'Role of the user' })
-  role!: Role;
+  role!: string;
 
   @ApiProperty({ description: 'Date the user was created' })
   createdAt!: Date;

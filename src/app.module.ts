@@ -8,9 +8,10 @@ import { PrismaModule } from './core/infrastructure/prisma/prisma.module';
 import { AppConfigService } from './common/config/config.service';
 import { UserModule } from './core/user/user.module';
 import { AuthModule } from './core/auth/auth.module';
+import { MovieModule } from './core/movies/movies.modules';
 
 @Module({
-  imports: [PrismaModule,UserModule,AuthModule],
+  imports: [PrismaModule,UserModule,AuthModule,MovieModule],
   controllers: [AppController],
   providers: [AppService,
     AppConfigService,

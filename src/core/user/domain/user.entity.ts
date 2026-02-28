@@ -50,4 +50,12 @@ export class User {
       updatedAt: this.props.updatedAt,
     };
   }
+
+  update(props: Partial<Omit<UserProps, 'id' | 'createdAt' | 'updatedAt'>>) {
+    if (props.name) this.props.name = props.name;
+    if (props.email) this.props.email = props.email;
+    if (props.role) this.props.role = props.role;
+    if (props.password) this.props.password = props.password;
+    this.props.updatedAt = new Date();
+  }
 }
