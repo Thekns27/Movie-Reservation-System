@@ -33,16 +33,18 @@ export class User {
   get email(): Email {
     return this.props.email;
   }
-  get role(): string {
+
+  get role(): Role {
     return this.props.role;
   }
+
 
   toPrimitives() {
     return {
       id: this.id,
       name: this.name,
       email: this.email.getValue(),
-      role: this.role,
+      role: this.props.role,
       password: this.props.password,
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt,

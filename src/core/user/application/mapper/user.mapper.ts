@@ -7,7 +7,7 @@ export class UserMapper {
       id: user.id!,
       name: user.name,
       email: user.email.getValue(),
-      role: user.role,
+      role: user.toPrimitives().role,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
